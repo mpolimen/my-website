@@ -110,3 +110,26 @@ blockquote p {
   bottom: 0;
   right: 5rem;
 }
+
+@media only screen and (max-device-width: 600px) {
+  h1 {
+    font-size: 22pt;
+  }
+
+  section, header, .left {
+    grid-column: 2 / 11;
+  }
+
+  i {
+    width: .01rem;
+    height: .01rem;
+    padding-right: 3.5rem;
+  }
+  .contact {
+    margin-left: 0;
+  }
+
+  blockquote p {
+    font-size: 20pt;
+  }
+}
