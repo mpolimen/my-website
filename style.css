@@ -30,8 +30,18 @@ main {
   grid-template-columns: repeat(12, 1fr);
 }
 
-h1, h2, h3, blockquote {
+ul {
+  list-style: none;
+}
+
+h1, h2, h3 {
   font-family: elevon, sans-serif;
+  font-weight: 700;
+  font-style: normal;
+}
+
+blockquote {
+  font-family: Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif, sans-serif;
   font-weight: 700;
   font-style: normal;
 }

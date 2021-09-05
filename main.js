@@ -2,82 +2,103 @@ import './style.css'
 
 import * as THREE from 'three';
 
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+// Some Code Credits: https://codepen.io/Mombasa/pen/leiGu
+var $container = $('#container');
+var renderer = new THREE.WebGLRenderer({antialias: true});
+var camera = new THREE.PerspectiveCamera(75,window.innerWidth/window.innerHeight,0.1,1000);
+var scene = new THREE.Scene();
+var mouseX = 0, mouseY = 0;
 
-// Set up scene, camera, and renderer
-const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-const renderer = new THREE.WebGL1Renderer({
-  canvas: document.querySelector('#bg'),
-});
-renderer.setPixelRatio(window.devicePixelRatio);
+scene.add(camera);
 renderer.setSize(window.innerWidth, window.innerHeight);
-camera.position.setZ(30);
+$container.append(renderer.domElement);
 
-// Create a geometry
-const geometry = new THREE.TorusGeometry(10, 3, 16, 100);
-const material = new THREE.MeshStandardMaterial({ color: 0xFF6347});
-const torus = new THREE.Mesh(geometry, material);
-scene.add(torus);
 
-// Light
-const pointLight = new THREE.PointLight(0xffffff);
-pointLight.position.set(20, 20, 20);
-scene.add(pointLight);
+window.addEventListener( 'resize', onWindowResize, false );
+/////////////////////////////////////////
 
-// Helpers
-// const lightHelper = new THREE.PointLightHelper(pointLight);
-// const gridHelper = new THREE.GridHelper(200, 50);
-// scene.add(lightHelper, gridHelper);
-const controls = new OrbitControls(camera, renderer.domElement);
+// Console
+var Controls = function() {
+  this.speed = 1;
+  this.rotation = 0;
+};
 
-// Add Stars
-function addStars() {
-  const geometry = new THREE.SphereGeometry(0.25, 24, 24);
-  const material = new THREE.MeshStandardMaterial({ color: 0xffffff });
-  const star = new THREE.Mesh(geometry, material);
-  const [x, y, z] = Array(3).fill().map(() => THREE.MathUtils.randFloatSpread(100));
-  star.position.set(x, y, z);
-  scene.add(star);
+var text = new Controls()
+//     gui = new dat.GUI();
+//     gui.add(text, 'speed', 0, 10);
+//     gui.add(text, 'rotation',0,15);
+
+/////////////////////////////////////////
+
+// Normalmaterial
+var normalMaterial = new THREE.MeshNormalMaterial({});
+
+
+// Torus
+function Torus(f){
+  this.b = new THREE.Mesh(new THREE.TorusGeometry( 160, 75, 2, 13),normalMaterial);
+  this.b.position.x = 57*Math.cos(f);
+  this.b.position.y = 57*Math.sin(f);
+  this.b.position.z = f*1.25;
+  this.b.rotation.z = f*0.03;
 }
-Array(200).fill().forEach(addStars);
+		
+var numTorus = 80;
+var tabTorus = [];
+for(var i=0; i<numTorus; i++){
+  tabTorus.push(new Torus(-i*13));
+  scene.add(tabTorus[i].b);
+}	
 
-// Background
-// const bgTexture = new THREE.TextureLoader().load('name.jpg');
-// scene.background = bgTexture;
+// Gallery
+const texture_me = new THREE.TextureLoader().load('images/me.jpg');
+const me = new THREE.Mesh(new THREE.BoxGeometry(3, 3, 3), new THREE.MeshBasicMaterial({ map: texture_me }));
+scene.add(me);
+me.position.z = -7;
+me.position.x = 3;
 
-
-// Avatar
-// const meTexture = new THREE.TextureLoader().load('me.jpg');
-// const marco = new THREE.Mesh(
-//   new THREE.BoxGeometry(3, 3, 3),
-//   new THREE.MeshBasicMaterial({ map: meTexture })
-// );
-// scene.add(marco);
-
-// Scrolling
-function moveCamera() {
+function spin() {
   const t = document.body.getBoundingClientRect().top;
 
-  torus.rotation.x += 0.01;
-  torus.rotation.y += 0.005;
-  torus.rotation.z += 0.01;
+  me.rotation.y += 0.01;
+  me.rotation.z += 0.01;
+  me.position.y = t * -.02;
 
-  camera.position.z = t * -0.01;
-  camera.position.x = t * -0.002;
-  camera.position.y = t * -0.002;
 }
-document.body.onscroll = moveCamera;
+document.body.onscroll = spin;
 
-// ANIMATE LOOP
-function animate() {
-  requestAnimationFrame(animate);
+// Update
+function update(){
+  for(var i=0; i<numTorus; i++){
+    tabTorus[i].b.position.z+=text.speed;
+    tabTorus[i].b.rotation.z+=i*text.rotation/10000;
+    if(tabTorus[i].b.position.z>0)
+    {
+      tabTorus[i].b.position.z=-1000;
+    }
+  }
+}
 
-  // torus.rotation.x += 0.01;
-  // torus.rotation.y += 0.005;
-  // torus.rotation.z += 0.01;
+function onWindowResize() {
+    // windowHalfX = window.innerWidth / 2;
+    // windowHalfY = window.innerHeight / 2;
 
-  controls.update();
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+
+    renderer.setSize( window.innerWidth, window.innerHeight );
+}
+
+// Render
+function render() {
+  requestAnimationFrame(render);
+
+  camera.position.x += (mouseX - camera.position.x ) * .05;
+  camera.position.y += (-mouseY - camera.position.y ) * .05;
+
   renderer.render(scene, camera);
+  update();
 }
-animate();
+
+render();
+spin();
