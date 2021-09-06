@@ -1,6 +1,7 @@
 import './style.css'
 
 import * as THREE from 'three';
+import { Mesh } from 'three';
 
 // https://codepen.io/cubeghost/pen/pJyQRx
 function init() {
@@ -25,6 +26,34 @@ function init() {
 	shape[2].position.set(0,5,0);
 	scene.add(shape[0],shape[1],shape[2]);
 
+	// CUBES
+	var cubes = [];
+	cubes.push(new Mesh(new THREE.BoxGeometry(3, 3, 3), new THREE.MeshNormalMaterial()));
+	cubes[0].position.set(6, -10, 0);
+	cubes[0].originaly = cubes[0].position.y;
+	cubes.push(new Mesh(new THREE.BoxGeometry(3, 3, 3), new THREE.MeshNormalMaterial()));
+	cubes[1].position.set(-10, -22, 0);
+	cubes[1].originaly = cubes[1].position.y;
+	cubes.push(new Mesh(new THREE.BoxGeometry(3, 3, 3), new THREE.MeshNormalMaterial()));
+	cubes[2].position.set(6, -35, 0);
+	cubes[2].originaly = cubes[2].position.y;
+	for(let cube of cubes) {
+		scene.add(cube);
+	}
+
+	// SPIN
+	function spin() {
+		const t = document.body.getBoundingClientRect().top;
+
+		cubes.forEach((cube) => {
+			cube.position.y = t * -0.015 + cube.originaly;
+			cube.rotation.y += 0.04;
+  			cube.rotation.z += 0.04;
+		})
+	}
+	document.body.onscroll = spin;
+	spin();
+
 	var light = new THREE.PointLight(0xfca4c5);
 	light.position.set(0,250,0);
 	scene.add(light);
@@ -47,21 +76,3 @@ function init() {
 }
 
 init();
-
-// // Gallery
-// const texture_me = new THREE.TextureLoader().load('images/me.jpg');
-// const me = new THREE.Mesh(new THREE.BoxGeometry(3, 3, 3), new THREE.MeshBasicMaterial({ map: texture_me }));
-// scene.add(me);
-// me.position.z = -7;
-// me.position.x = 3;
-
-// function spin() {
-//   const t = document.body.getBoundingClientRect().top;
-
-//   me.rotation.y += 0.01;
-//   me.rotation.z += 0.01;
-//   me.position.y = t * -.02;
-
-// }
-// document.body.onscroll = spin;
-// spin();
