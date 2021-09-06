@@ -35,6 +35,10 @@ main {
   grid-template-columns: repeat(12, 1fr);
 }
 
+header h1 {
+  text-align: center;
+}
+
 h1, h2, h3 {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif, sans-serif;
   font-weight: 700;
@@ -93,7 +97,7 @@ blockquote p {
 }
 
 .contact {
-  margin-left: 5rem;
+  margin-left: 6rem;
 }
 
 .contact a {
@@ -121,12 +125,11 @@ blockquote p {
   }
 
   i {
-    width: .01rem;
-    height: .01rem;
-    padding-right: 3.5rem;
+    padding-right: .25rem;
   }
   .contact {
-    margin-left: 0;
+    font-size: 1rem;
+    margin-left: 3rem;
   }
 
   blockquote p {
