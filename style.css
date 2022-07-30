@@ -109,6 +109,17 @@ blockquote p {
   color: rgba(255, 255, 255, 1);
 }
 
+.company {
+    display: flex;
+}
+
+.company img {
+    max-width: 80px;
+    margin-top: 25px;
+    max-height: 35px;
+    margin-right: 10px;
+}
+
 #dance {
   position: absolute;
   bottom: 0;
